@@ -1,4 +1,7 @@
 <?php
+
+use Discord\Builders\Components\Button;
+use Discord\Builders\Components\TextInput;
 use Discord\Discord;
 use Discord\Helpers\Collection;
 use Discord\Parts\Channel\Message;
@@ -7,6 +10,10 @@ use Discord\WebSockets\Event;
 use Dotenv\Dotenv;
 
 include 'vendor/autoload.php';
+
+const BLUE = 0x0000FF;
+const RED = 0xFF0000;
+const GREEN = 0x00FF00;
 
 $dotenv = Dotenv::createImmutable(dirname(__FILE__,2));
 $dotenv->load();
@@ -33,7 +40,7 @@ $discord->on('ready', function (Discord $discord) {
             $embed->setTitle('Uma mensagem embed')
                 ->setDescription("O campo descrição!")
                 ->setFooter('Conteudo do rodapé')
-                ->setColor(0x27E343)
+                ->setColor(RED)
                 ->addField([
                     'name' => "Campo 1:",
                     'value' => 'Valor campo 1',
@@ -44,10 +51,11 @@ $discord->on('ready', function (Discord $discord) {
                     'value' => "Valor Campo 2",
                     'inline' => false,
                 ])
-                ->setThumbnail('https://www.botecodigital.dev.br/wp-content/themes/boteco_v4/img/logob.png')
-                ->setImage('https://ferramentas.botecodigital.dev.br/qrcode_generator/imagem.php?c=Um%20qr%20code&ec=QR_ECLEVEL_L&t=10');
+                ->setThumbnail('https://thypix.com/wp-content/uploads/2021/02/pixel-sunglasses-17-700x407.png')
+                ->setImage('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Illuminati_triangle_eye.png/461px-Illuminati_triangle_eye.png');
 
             $message->channel->sendEmbed($embed);
+            return;
         }
 
         
@@ -57,6 +65,7 @@ $discord->on('ready', function (Discord $discord) {
                 return;
             }
             $message->channel->sendMessage("{$message->author} se estiver precisando de alguma ajuda poste no canal apropriado <#942971671927717929>");
+            return;
         }
         
         if (str_contains($content, 'clean')) {
@@ -67,6 +76,7 @@ $discord->on('ready', function (Discord $discord) {
             });
             
             $message->channel->sendMessage("Chat limpo");
+            return;
         }
     });
 });
