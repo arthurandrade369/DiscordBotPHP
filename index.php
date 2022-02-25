@@ -1,11 +1,8 @@
 <?php
 
 use Discord\Discord;
-use Discord\Helpers\Collection;
 use Discord\Parts\Channel\Message;
-use Discord\Parts\Embed\Embed;
 use Discord\WebSockets\Event;
-use Dotenv\Dotenv;
 
 include 'vendor/autoload.php';
 
@@ -15,7 +12,7 @@ if(file_exists('config/config.php')){
     die();
 }
 
-foreach (glob(__DIR__ . 'src/lib/*.php') as $lib)
+foreach (glob(__DIR__ . '/src/lib/*.php') as $lib)
 {
     require_once $lib;
 }

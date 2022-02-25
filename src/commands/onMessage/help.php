@@ -3,7 +3,6 @@
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
-require dirname(__FILE__,3).'/lib/messageContains.php';
 
 class help
 {
