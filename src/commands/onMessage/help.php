@@ -3,6 +3,8 @@
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 
+require dirname(__FILE__,3).'/lib/messageContains.php';
+
 class help
 {
     public array $config;
@@ -12,6 +14,7 @@ class help
     
     public function init(array $config, Discord $discord)
     {
+        $this->config = $config;
         $this->discord = $discord;
         $this->triggers[] = $this->config['bot']['trigger'] . 'help';
     }
@@ -19,11 +22,40 @@ class help
     public function onMessage(array $iDataMsg, Message $message)
     {
         $this->message = $message;
-        
         $message = $iDataMsg['message']['message'];
-        $user = $iDataMsg['message']['author'];
         
-        $this->message->reply("ta entrando aqui hein");
+        $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
+        if(isset($data['trigger']))
+        {
+            global $commands;
+            $messageString = $data['messageString'];
+
+            if(!$messageString)
+            {
+                $cmd = array();
+                foreach($commands as $command)
+                {
+                    $info = $command->information();
+                    if(!empty($info['name']))
+                    {
+                        $cmd[] = $info['name'];
+                    }
+                }
+
+                $this->message->reply('Here is a list of commands available: **' . 
+                implode('** |  **', $cmd) . 
+                "** If you'd like help with a specific command simply use the command !help <CommandName>");
+            } else {
+                foreach($commands as $command)
+                {
+                    if(strtolower($messageString) === strtolower($command->information()['name']))
+                    {
+                        $this->message->reply($command->information()['information']);
+                    }
+                }
+            }
+
+        }
     }
 
     public function information()

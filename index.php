@@ -15,6 +15,15 @@ if(file_exists('config/config.php')){
     die();
 }
 
+foreach (glob(__DIR__ . 'src/lib/*.php') as $lib)
+{
+    require_once $lib;
+}
+
+$discord = new Discord([
+    'token' => $config['bot']['token'],
+]);
+
 $commandsDir = array('./src/commands/onMessage/*.php');
 $commands = array();
 
@@ -22,21 +31,18 @@ foreach ($commandsDir as $dir) {
     foreach (glob($dir) as $command) {
         require_once $command;
 
-        $filname = str_replace('.php', '', basename($command));
-        $c = new $filname;
-        $c->init($discord);
-        $commands[]=$c;
+        $filename = str_replace('.php', '', basename($command));
+        $cmds = new $filename;
+        $cmds->init($config, $discord);
+        $commands[]=$cmds;
     }
 }
 
-$discord = new Discord([
-    'token' => $config['bot']['token'],
-]);
 
 $discord->on('ready', function (Discord $discord) use ($commands, $config) {
     echo "BotTestPHP is online..." . PHP_EOL;
 
-    $discord->on(Event::MESSAGE_CREATE, function (Message $message, Discord $discord) use ($commands, $config) {
+    $discord->on(Event::MESSAGE_CREATE, function (Message $message) use ($commands, $config) {
         
         $iDataMsg = array(
             'message' => array(

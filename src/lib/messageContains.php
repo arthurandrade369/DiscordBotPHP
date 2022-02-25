@@ -1,8 +1,6 @@
 <?php
 
-use Discord\Parts\Channel\Message;
-
-function command(Message $message, array $trigger, $symbol)
+function command(string $message, array $trigger, $symbol)
 {
     foreach ($trigger as $trig) {
         if (substr($message, 0, strlen($trig)) == $trig) {
