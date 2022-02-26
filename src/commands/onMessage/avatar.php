@@ -2,6 +2,7 @@
 
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
+use Discord\Repository\UserRepository;
 
 class avatar
 {
@@ -23,16 +24,16 @@ class avatar
         $message = $iDataMsg['message']['message'];
 
         $data = command($message, $this->information()['trigger'], $this->config['bot']['trigger']);
-        if(isset($data['trigger']))
-        {
+        if (isset($data['trigger'])) {
             global $commands;
             $messageString = $data['messageString'];
 
-            if(!$messageString)
-            {
+            if (!$messageString) {
                 $this->message->reply($this->message->author->avatar);
             } else {
-                $this->message->reply("EM PROGESSO!");
+                $id = str_replace(array('<', '>', '@', '!'), '', $messageString);
+                $user = $this->discord->users->get('id', $id);
+                $this->message->reply($user->avatar);
             }
         }
     }
@@ -42,7 +43,7 @@ class avatar
         return array(
             'name' => 'avatar',
             'trigger' => $this->triggers,
-            'information' => 'Shows a Discord users avatar. If anyone user is send, return the avatar of the author. Example **!avatar @user**',
+            'information' => 'Brings Discord users avatar. If nobody user is marked, will be send the avatar of the author. Example **!avatar @user**',
         );
     }
 }

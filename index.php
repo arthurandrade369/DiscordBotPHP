@@ -6,14 +6,13 @@ use Discord\WebSockets\Event;
 
 include 'vendor/autoload.php';
 
-if(file_exists('config/config.php')){
+if (file_exists('config/config.php')) {
     require_once 'config/config.php';
 } else {
     die();
 }
 
-foreach (glob(__DIR__ . '/src/lib/*.php') as $lib)
-{
+foreach (glob(__DIR__ . '/src/lib/*.php') as $lib) {
     require_once $lib;
 }
 
@@ -31,7 +30,7 @@ foreach ($commandsDir as $dir) {
         $filename = str_replace('.php', '', basename($command));
         $cmds = new $filename;
         $cmds->init($config, $discord);
-        $commands[]=$cmds;
+        $commands[] = $cmds;
     }
 }
 
@@ -40,7 +39,7 @@ $discord->on('ready', function (Discord $discord) use ($commands, $config) {
     echo "BotTestPHP is online..." . PHP_EOL;
 
     $discord->on(Event::MESSAGE_CREATE, function (Message $message) use ($commands, $config) {
-        
+
         $iDataMsg = array(
             'message' => array(
                 'timestamp' => $message->timestamp,
@@ -54,13 +53,13 @@ $discord->on('ready', function (Discord $discord) use ($commands, $config) {
             )
         );
 
-        if (isset($message->content[0])){
-            if($message->content[0] == $config['bot']['trigger']){
-                foreach ($commands as $command){
+        if (isset($message->content[0])) {
+            if ($message->content[0] == $config['bot']['trigger']) {
+                foreach ($commands as $command) {
                     try {
                         $command->onMessage($iDataMsg, $message);
                     } catch (Exception $e) {
-                        echo ($e);
+                        $message->reply($e);
                     }
                 }
             }
